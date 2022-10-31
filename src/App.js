@@ -1,25 +1,71 @@
-import logo from './logo.svg';
 import './App.css';
+import React from "react";
+import style from "./App.module.scss"
+import { InputSection } from './components/InputSection';
+import { OutputSection } from './components/OutputSection';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const defaultValues = {
+  inputOne:"",
+  inputTwo:"",
+  checkboxOne: false,
+  checkboxTwo: true,
+  radio: "one",
+  selectedValue: "lime",
+}
+class App extends React.Component {
+  state = {
+    inputValues: {
+      ...defaultValues
+    },
+  formData: ""
+  }
+
+  onFormSubmit = (serializedData) => {
+    this.setState({formData: serializedData})
+    this.setState({
+      inputValues: {
+        ...defaultValues
+      },
+    })
+  }
+
+  onInputChange = (e) => {
+    const fieldName = e.target.name;
+    const fieldType = e.target.type;
+
+    const getValue = () => {
+      switch(fieldType) {
+        case "checkbox":
+          return e.target.checked;
+        case "radio":
+          return e.target.value;
+        case "text":
+          default:
+          return e.target.value;
+      }
+    };
+    
+    this.setState({
+      inputValues: {
+        ...this.state.inputValues,
+        [fieldName]: getValue(),
+      }
+    })
+  }
+
+  render() {
+    return (
+      <div className={style.Wrapper}>
+        <InputSection 
+          inputValues={this.state.inputValues} 
+          onFormSubmit={this.onFormSubmit}
+          onChange={this.onInputChange}
+          />
+        <OutputSection formData={this.state.formData}/>
+      </div>
+    )
+
+  }
 }
 
 export default App;
